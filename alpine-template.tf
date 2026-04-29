@@ -1,6 +1,6 @@
 resource "proxmox_virtual_environment_vm" "alpine_template" {
   name        = "alpine-template"
-  node_name   = psyche
+  node_name   = "psyche"
   template    = true
   started     = false
   description = "Managed by Terraform"
