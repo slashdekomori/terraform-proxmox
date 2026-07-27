@@ -1,0 +1,10 @@
+# Terraform state
+terraform.tfstate*
+.terraform
+.terraform.lock*
+*.tfvars
+!terraform.tfvars.example
+
+# VM images
+*.qcow2
+debian-13-generic*
