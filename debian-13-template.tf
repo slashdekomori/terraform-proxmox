@@ -37,6 +37,7 @@ resource "proxmox_virtual_environment_vm" "debian-13-template" {
     iothread     = true
     backup       = false
     discard      = "on"
+    size         = 15
   }
 
   serial_device {
