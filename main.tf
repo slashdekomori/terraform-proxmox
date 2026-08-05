@@ -14,3 +14,9 @@ provider "proxmox" {
   insecure  = var.proxmox_insecure
 }
 
+module "vms" {
+  source         = "./vms"
+  vm_password    = var.vm_password
+  ssh_keys       = var.ssh_keys
+  debian13-image = var.debian13-image
+}
