@@ -1,0 +1,24 @@
+#cloud-config
+
+timezone: Europe/Moscow
+hostname: ${hostname}
+
+users:
+  - default
+  - name: ${username}
+    groups: sudo
+    shell: /bin/bash
+    passwd: ${password}
+    ssh_authorized_keys:
+%{ for key in ssh_keys ~}
+      - ${key}
+%{ endfor ~}
+
+package_update: true
+packages:
+  - qemu-guest-agent
+  - curl
+  - git
+  - gnupg
+runcmd:
+    - systemctl enable --now qemu-guest-agent
