@@ -2,13 +2,4 @@
 proxmox_endpoint  = "https://10.0.0.100:8006"
 proxmox_api_token = "TOKEN"
 proxmox_insecure  = true
-
-# VM
-vm_password = "PASSWORD"
-ssh_keys = [
-  "ssh key 1"
-  "ssh key 2 or just remove this line and ',' above"
-]
-
-# Images
-debian13-image = "local:import/debian-13-genericcloud-amd64-custom.qcow2"
+proxmox_password  = "password"
