@@ -20,9 +20,12 @@ provider "proxmox" {
   }
 }
 
-module "vms" {
-  source         = "./vms"
-  vm_password    = var.vm_password
-  ssh_keys       = var.ssh_keys
-  debian13-image = var.debian13-image
+module "debian13_template" {
+  source = "./modules/vm-template"
+
+  node_name       = "psyche"
+  vm_id           = 9100
+  datastore_id    = "slow"
+  vm_name         = "debian13-template"
+  cloud_image_url = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
 }
