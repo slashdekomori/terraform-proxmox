@@ -20,7 +20,15 @@ resource "proxmox_virtual_environment_vm" "this-template" {
     dedicated = var.memory
     floating  = var.memory
   }
-  initialization { datastore_id = var.datastore_id }
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "dhcp"
+      }
+    }
+    datastore_id      = var.datastore_id
+    user_data_file_id = var.user_data_file_id
+  }
 
   disk {
     datastore_id = var.datastore_id

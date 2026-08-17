@@ -18,3 +18,7 @@ variable "proxmox_insecure" {
   type        = bool
   default     = true
 }
+variable "ssh_public_keys" {
+  type    = list(string)
+  default = []
+}

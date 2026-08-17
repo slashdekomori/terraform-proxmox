@@ -22,3 +22,6 @@ variable "memory" {
   type    = number
   default = 1024
 }
+variable "user_data_file_id" {
+  type = string
+}
