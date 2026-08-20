@@ -9,3 +9,6 @@ ssh_public_keys = [
   "ssh-ed25519 AAAAC3NzaC... user1@laptop",
   "ssh-rsa AAAAB3NzaC1yc2E... user2@desktop",
 ]
+
+user_name     = "name"
+user_password = "password"

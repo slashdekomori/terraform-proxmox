@@ -20,26 +20,6 @@ provider "proxmox" {
   }
 }
 
-resource "proxmox_virtual_environment_file" "user_data_cloud_config" {
-  content_type = "snippets"
-  datastore_id = "local"
-  node_name    = "psyche"
-
-  source_file {
-    path      = "${path.module}/cloud-init/user-data.yaml"
-    file_name = "user-data-cloud-config.yaml"
-  }
-}
-
-# module "vm" {
-#   source = "./modules/vm-template"
-#
-#   # Pass the uploaded snippet ID into the module
-#   user_data_file_id = proxmox_virtual_environment_file.user_data_cloud_config.id
-#
-#   # ... other variables
-# }
-
 module "debian13_template" {
   source = "./modules/vm-template"
 
@@ -47,6 +27,11 @@ module "debian13_template" {
   vm_id           = 9100
   datastore_id    = "slow"
   vm_name         = "debian13-template"
-  user_data_file_id = 
   cloud_image_url = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
+
+  ssh_public_keys = var.ssh_public_keys
+  user_password   = var.user_password
+  user_name       = var.user_name
+  timezone        = var.timezone
 }
+
