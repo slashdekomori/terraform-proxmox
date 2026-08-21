@@ -1,4 +1,4 @@
-variable "cloud_image_url" { type = string }
+variable "cloud_image_id" { type = string }
 variable "node_name" { type = string }
 variable "datastore_id" { type = string }
 variable "vm_name" { type = string }
