@@ -31,9 +31,13 @@ locals {
   default_datastore = "slow"
   default_node_name = "psyche"
 
+  vms = {
+    test_vm_1 = { vm_id = 9100 }
+    test_vm_2 = { vm_id = 9200 }
+  }
+
   templates = {
-    debian13_template_1 = { vm_id = 9100, vm_name = "debian13-template" }
-    debian13_template_2 = { vm_id = 9200, vm_name = "debian13-template-2" }
+    debian13_template_1 = { vm_id = 9100 }
   }
 }
 
@@ -44,7 +48,22 @@ module "vm_template" {
   node_name       = try(each.value.datastore_id, local.default_node_name)
   vm_id           = each.value.vm_id
   datastore_id    = try(each.value.datastore_id, local.default_datastore)
-  vm_name         = each.value.vm_name
+  vm_name         = try(each.value.vm_name, each.key)
+  cloud_image_id  = proxmox_download_file.debian-13-genericcloud-amd64.id
+  ssh_public_keys = var.ssh_public_keys
+  user_password   = var.user_password
+  user_name       = var.user_name
+  timezone        = var.timezone
+}
+
+module "vm" {
+  source   = "./modules/vm"
+  for_each = local.vms
+
+  node_name       = try(each.value.datastore_id, local.default_node_name)
+  vm_id           = each.value.vm_id
+  datastore_id    = try(each.value.datastore_id, local.default_datastore)
+  vm_name         = try(each.value.vm_name, each.key)
   cloud_image_id  = proxmox_download_file.debian-13-genericcloud-amd64.id
   ssh_public_keys = var.ssh_public_keys
   user_password   = var.user_password
