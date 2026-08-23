@@ -15,7 +15,7 @@ resource "proxmox_virtual_environment_file" "user_data" {
   }
 }
 
-resource "proxmox_virtual_environment_vm" "this-template" {
+resource "proxmox_virtual_environment_vm" "vm" {
   name      = var.vm_name
   node_name = var.node_name
   vm_id     = var.vm_id
