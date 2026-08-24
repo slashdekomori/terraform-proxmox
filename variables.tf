@@ -8,7 +8,7 @@ variable "proxmox_api_token" {
   sensitive   = true
 }
 variable "proxmox_password" {
-  description = "Proxmox VE API token"
+  description = "Proxmox VE password"
   type        = string
   sensitive   = true
 }
