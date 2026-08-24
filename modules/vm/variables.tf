@@ -2,8 +2,10 @@ variable "cloud_image_id" { type = string }
 variable "node_name" { type = string }
 variable "datastore_id" { type = string }
 variable "vm_name" { type = string }
-# TODO: Make optional, so if not specified will use any free id
-variable "vm_id" { type = number }
+variable "vm_id" {
+  type    = number
+  default = null
+}
 variable "disk_size" {
   type    = number
   default = 20
