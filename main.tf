@@ -45,15 +45,11 @@ module "vm_template" {
   source   = "./modules/vm_template"
   for_each = local.vm_templates
 
-  node_name       = try(each.value.datastore_id, local.default_node_name)
-  vm_id           = each.value.vm_id
-  datastore_id    = try(each.value.datastore_id, local.default_datastore)
-  vm_name         = try(each.value.vm_name, each.key)
-  cloud_image_id  = proxmox_download_file.debian-13-genericcloud-amd64.id
-  ssh_public_keys = var.ssh_public_keys
-  user_password   = var.user_password
-  user_name       = var.user_name
-  timezone        = var.timezone
+  node_name      = try(each.value.node_name, local.default_node_name)
+  vm_id          = each.value.vm_id
+  datastore_id   = try(each.value.datastore_id, local.default_datastore)
+  vm_name        = try(each.value.vm_name, each.key)
+  cloud_image_id = proxmox_download_file.debian-13-genericcloud-amd64.id
 }
 
 module "vm" {
