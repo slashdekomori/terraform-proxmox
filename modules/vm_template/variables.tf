@@ -1,4 +1,4 @@
-variable "cloud_image_id" { type = string }
+variable "image_file_id" { type = string }
 variable "node_name" { type = string }
 variable "datastore_id" { type = string }
 variable "vm_name" { type = string }
@@ -18,4 +18,11 @@ variable "socket" {
 variable "memory" {
   type    = number
   default = 1024
+}
+variable "ssh_public_keys" {
+  type = list(string)
+}
+variable "username" {
+  type    = string
+  default = "origin"
 }

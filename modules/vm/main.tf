@@ -44,7 +44,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   disk {
     datastore_id = var.datastore_id
-    import_from  = var.cloud_image_id
+    import_from  = var.image_file_id
     interface    = "virtio0"
     iothread     = true
     backup       = false

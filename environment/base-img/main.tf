@@ -30,15 +30,10 @@ resource "proxmox_download_file" "debian-13-cloudimg" {
 locals {
   default_node_name          = "psyche"
   default_datastore_id       = "slow"
-  default_image_file_id      = proxmox_download_file.debian-13-cloudimg.id
   default_image_datastore_id = "slow-files"
 
   vm_templates = {
-    debian13-cloudimg-base = { vm_id = 9001, image_file_id = proxmox_download_file.debian-13-cloudimg.id }
-  }
-
-  vms = {
-    vm_test_1 = { vm_id = 1001 }
+    debian13-cloudimg-base = { vm_id = 9000, image_file_id = proxmox_download_file.debian-13-cloudimg.id }
   }
 }
 
@@ -52,19 +47,4 @@ module "vm_template" {
   vm_name         = try(each.value.vm_name, each.key)
   image_file_id   = try(each.value.image_file_id, local.default_image_file_id)
   ssh_public_keys = var.init_ssh_public_key
-}
-
-module "vm" {
-  source   = "./modules/vm"
-  for_each = local.vms
-
-  node_name       = try(each.value.datastore_id, local.default_node_name)
-  vm_id           = each.value.vm_id
-  datastore_id    = try(each.value.datastore_id, local.default_datastore_id)
-  vm_name         = try(each.value.vm_name, each.key)
-  image_file_id   = try(each.value.image_file_id, local.default_image_datastore_id)
-  ssh_public_keys = var.ssh_public_keys
-  user_password   = var.user_password
-  user_name       = var.user_name
-  timezone        = var.timezone
 }
