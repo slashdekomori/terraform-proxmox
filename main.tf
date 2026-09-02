@@ -24,7 +24,7 @@ module "debian13_template" {
   source = "./modules/vm-template"
 
   node_name       = "psyche"
-  vm_id           = 9100
+  vm_id           = 1100
   datastore_id    = "slow"
   vm_name         = "debian13-template"
   cloud_image_url = "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-genericcloud-amd64.qcow2"
