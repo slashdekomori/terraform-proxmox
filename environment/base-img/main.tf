@@ -1,24 +1,3 @@
-terraform {
-  required_version = ">=1.15.1"
-  required_providers {
-    proxmox = {
-      source  = "bpg/proxmox"
-      version = ">=0.80.0"
-    }
-  }
-}
-provider "proxmox" {
-  endpoint  = var.proxmox_endpoint
-  api_token = var.proxmox_api_token
-  insecure  = var.proxmox_insecure
-
-  ssh {
-    agent    = true
-    username = "root"
-    password = var.proxmox_password
-  }
-}
-
 resource "proxmox_download_file" "debian-13-cloudimg" {
   content_type        = "import"
   datastore_id        = local.default_image_datastore_id
@@ -33,7 +12,7 @@ locals {
   default_image_datastore_id = "slow-files"
 
   vm_templates = {
-    debian13-cloudimg-base = { vm_id = 9000, image_file_id = proxmox_download_file.debian-13-cloudimg.id }
+    debian13-base = { vm_id = var.debian13_base_image_id, image_file_id = proxmox_download_file.debian-13-cloudimg.id }
   }
 }
 

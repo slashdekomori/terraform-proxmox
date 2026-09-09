@@ -17,21 +17,3 @@ variable "proxmox_insecure" {
   type        = bool
   default     = true
 }
-
-variable "init_ssh_public_key" {
-  type = list(string)
-}
-variable "ssh_public_keys" {
-  type = list(string)
-}
-variable "user_password" {
-  type      = string
-  sensitive = true
-}
-variable "user_name" {
-  type = string
-}
-variable "timezone" {
-  type    = string
-  default = "Europe/Moscow"
-}
