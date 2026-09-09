@@ -2,7 +2,10 @@ variable "image_file_id" { type = string }
 variable "node_name" { type = string }
 variable "datastore_id" { type = string }
 variable "vm_name" { type = string }
-variable "vm_id" { type = number }
+variable "vm_id" {
+  type    = number
+  default = null
+}
 variable "disk_size" {
   type    = number
   default = 20
