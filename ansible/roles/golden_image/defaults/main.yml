@@ -1,0 +1,22 @@
+---
+# Overridden per-distro by each playbook in playbooks/
+
+proxmox_node: pve01
+storage_pool: slow
+import_storage: local
+bridge: vmbr0
+cores: 2
+memory: 2048
+disk_size: 20G
+
+# ssh_user: init
+# ssh_pubkey_path: "{{ lookup('env', 'HOME') }}/.ssh/id_ed25519.pub"
+
+workdir: "{{ playbook_dir }}/build/{{ distro }}"
+shared_vars_file: "{{ playbook_dir }}/../../shared/templates.json"
+
+# Required per-distro (set in playbooks/<distro>.yml):
+# distro: debian13
+# image_url: https://...
+# template_name: debian13-golden
+# template_id_key: debian13_template_id
