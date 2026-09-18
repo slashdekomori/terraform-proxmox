@@ -22,6 +22,10 @@ variable "memory" {
   type    = number
   default = 1024
 }
+variable "template_id" {
+  type    = number
+  default = null
+}
 
 variable "user_name" { type = string }
 variable "user_password" { type = string }
