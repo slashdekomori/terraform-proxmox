@@ -22,10 +22,6 @@ variable "memory" {
   type    = number
   default = 1024
 }
-variable "ssh_public_keys" {
-  type = list(string)
-}
-variable "username" {
-  type    = string
-  default = "origin"
-}
+variable "user_name" { type = string }
+variable "user_password" { type = string }
+variable "ssh_public_keys" { type = list(string) }

@@ -21,7 +21,8 @@ resource "proxmox_virtual_environment_vm" "vm_template" {
       }
     }
     user_account {
-      username = var.username
+      username = var.user_name
+      password = var.user_password
       keys     = var.ssh_public_keys
     }
     datastore_id = var.datastore_id
