@@ -28,7 +28,7 @@ variable "default_datastore_id" {
 }
 variable "default_image_datastore_id" {
   type    = string
-  default = "slow"
+  default = "slow-files"
 }
 
 variable "default_user_name" {
@@ -48,8 +48,8 @@ variable "default_timezone" {
 }
 
 variable "init_user_name" {
-  type      = string
-  sensitive = true
+  type    = string
+  default = "init"
 }
 variable "init_user_password" {
   type      = string
