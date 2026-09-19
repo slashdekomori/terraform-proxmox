@@ -3,6 +3,28 @@ resource "proxmox_virtual_environment_vm" "vm_template" {
   node_name = var.node_name
   vm_id     = var.vm_id
 
+  dynamic "clone" {
+    for_each = var.template_id != null ? [1] : []
+
+    content {
+      vm_id = var.template_id
+    }
+  }
+
+  dynamic "disk" {
+    for_each = var.template_id == null ? [1] : []
+
+    content {
+      datastore_id = var.datastore_id
+      import_from  = var.image_file_id
+      interface    = "virtio0"
+      iothread     = true
+      backup       = true
+      discard      = "on"
+      size         = var.disk_size
+    }
+  }
+
   cpu {
     cores   = var.cores
     sockets = var.socket
@@ -26,16 +48,6 @@ resource "proxmox_virtual_environment_vm" "vm_template" {
       keys     = var.ssh_public_keys
     }
     datastore_id = var.datastore_id
-  }
-
-  disk {
-    datastore_id = var.datastore_id
-    import_from  = var.image_file_id
-    interface    = "virtio0"
-    iothread     = true
-    backup       = false
-    discard      = "on"
-    size         = var.disk_size
   }
 
   network_device {
