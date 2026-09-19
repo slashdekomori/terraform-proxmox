@@ -30,6 +30,7 @@ module "vm_template" {
   vm_name      = try(each.value.vm_name, each.key)
   # TODO: kinda sketchy
   image_file_id   = try(each.value.image_file_id, null)
+  template_id     = try(each.value.image_file_id, local.default_template_id, null)
   user_name       = try(each.value.user_name, var.init_user_name)
   user_password   = try(each.value.user_password, var.init_user_password)
   ssh_public_keys = var.init_ssh_public_keys
