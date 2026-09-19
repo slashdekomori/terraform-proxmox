@@ -1,0 +1,13 @@
+---
+proxmox_node: psyche
+storage_pool: slow
+import_storage: slow
+bridge: vmbr0
+cores: 2
+memory: 2048
+disk_size: 20G
+
+workdir: "/slow/files/ias/build/{{ distro }}"
+shared_vars_file: "{{ playbook_dir }}/../../shared/templates.json"
+image_name: "{{ image_url | basename }}"
+customized_image_name: "{{ image_name | regex_replace('\\.qcow2$', '-customized.qcow2') }}"

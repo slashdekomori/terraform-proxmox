@@ -1,0 +1,11 @@
+---
+- name: Build Debian 13 golden template
+  hosts: proxmox
+  gather_facts: false
+  vars:
+    distro: debian13
+    image_url: https://cloud.debian.org/images/cloud/trixie/latest/debian-13-generic-amd64.qcow2
+    template_name: debian13-golden
+    template_id_key: debian13_template_id
+  roles:
+    - golden_image

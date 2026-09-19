@@ -1,11 +1,11 @@
-variable "cloud_image_url" {
-  description = "Cloud image url"
-  type        = string
-}
+variable "image_file_id" { type = string }
 variable "node_name" { type = string }
 variable "datastore_id" { type = string }
 variable "vm_name" { type = string }
-variable "vm_id" { type = number }
+variable "vm_id" {
+  type    = number
+  default = null
+}
 variable "disk_size" {
   type    = number
   default = 20
@@ -22,3 +22,6 @@ variable "memory" {
   type    = number
   default = 1024
 }
+variable "user_name" { type = string }
+variable "user_password" { type = string }
+variable "ssh_public_keys" { type = list(string) }

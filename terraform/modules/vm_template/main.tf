@@ -1,11 +1,4 @@
-resource "proxmox_download_file" "this_image" {
-  content_type = "import"
-  datastore_id = "local"
-  node_name    = var.node_name
-  url          = var.cloud_image_url
-}
-
-resource "proxmox_virtual_environment_vm" "this-template" {
+resource "proxmox_virtual_environment_vm" "vm_template" {
   name      = var.vm_name
   node_name = var.node_name
   vm_id     = var.vm_id
@@ -20,11 +13,24 @@ resource "proxmox_virtual_environment_vm" "this-template" {
     dedicated = var.memory
     floating  = var.memory
   }
-  initialization { datastore_id = var.datastore_id }
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "dhcp"
+      }
+    }
+    user_account {
+      username = var.user_name
+      password = var.user_password
+      keys     = var.ssh_public_keys
+    }
+    datastore_id = var.datastore_id
+  }
 
   disk {
     datastore_id = var.datastore_id
-    import_from  = proxmox_download_file.this_image.id
+    import_from  = var.image_file_id
     interface    = "virtio0"
     iothread     = true
     backup       = false
@@ -41,6 +47,10 @@ resource "proxmox_virtual_environment_vm" "this-template" {
   serial_device { device = "socket" }
   vga { type = "serial0" }
 
+  agent {
+    enabled = true
+  }
+
   efi_disk {
     datastore_id = var.datastore_id
     type         = "4m"
@@ -52,4 +62,3 @@ resource "proxmox_virtual_environment_vm" "this-template" {
   started         = false
   stop_on_destroy = true
 }
-

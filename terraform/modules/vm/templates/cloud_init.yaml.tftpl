@@ -1,0 +1,25 @@
+#cloud-config
+
+hostname: ${vm_name}
+timezone: ${timezone}
+
+chpasswd:
+  list: |
+    ${user_name}:${user_password}
+  expire: false
+
+users:
+  - name: ${user_name}
+    groups: sudo
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+    ssh_authorized_keys:%{ for key in ssh_public_keys }
+      - ${key}%{ endfor }
+
+package_update: true
+packages:
+  - qemu-guest-agent
+  - docker.io
+runcmd:
+  - systemctl enable --now qemu-guest-agent

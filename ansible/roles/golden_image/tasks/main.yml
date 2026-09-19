@@ -1,0 +1,141 @@
+---
+- name: Assert required distro-specific vars are set
+  ansible.builtin.assert:
+    that:
+      - distro is defined
+      - image_url is defined
+      - template_name is defined
+      - template_id_key is defined
+    fail_msg: "distro, image_url, template_name, and template_id_key must be set by the calling playbook"
+
+- name: Read shared template IDs
+  ansible.builtin.set_fact:
+    shared_templates: "{{ lookup('file', shared_vars_file) | from_json }}"
+
+- name: Look up this distro's fixed template VM ID
+  ansible.builtin.set_fact:
+    vmid: "{{ shared_templates[template_id_key] }}"
+
+- name: Fail if template_id_key is missing from shared vars
+  ansible.builtin.assert:
+    that:
+      - vmid is defined
+      - vmid | int > 0
+    fail_msg: "{{ template_id_key }} missing or invalid in {{ shared_vars_file }}"
+
+- name: Ensure workdir exists
+  ansible.builtin.file:
+    path: "{{ workdir }}"
+    state: directory
+    mode: "0755"
+
+- name: Download base cloud image
+  ansible.builtin.get_url:
+    url: "{{ image_url }}"
+    dest: "{{ workdir }}/{{ image_name }}"
+    mode: "0644"
+  register: image_download
+
+- name: Copy base image for customization
+  ansible.builtin.copy:
+    src: "{{ workdir }}/{{ image_name }}"
+    dest: "{{ workdir }}/{{ customized_image_name }}"
+    remote_src: true
+    mode: "0644"
+
+- name: Customize image offline with virt-customize
+  ansible.builtin.command:
+    argv:
+      - virt-customize
+      - -a
+      - "{{ workdir }}/{{ customized_image_name }}"
+      - --install
+      - qemu-guest-agent
+      - --run-command
+      - systemctl enable qemu-guest-agent
+      - --run-command
+      - truncate -s 0 /etc/machine-id
+      - --run-command
+      - rm -f /etc/ssh/ssh_host_*
+      - --run-command
+      - cloud-init clean --logs
+  changed_when: image_download.changed
+
+- name: Check for an existing VM/template with this ID
+  ansible.builtin.command:
+    argv: [qm, status, "{{ vmid }}"]
+  register: existing_vm
+  failed_when: false
+  changed_when: false
+
+- name: Destroy existing VM/template with this ID, if present
+  ansible.builtin.command:
+    argv: [qm, destroy, "{{ vmid }}", --purge]
+  when: existing_vm.rc == 0
+
+- name: Create the VM shell
+  ansible.builtin.command:
+    argv:
+      - qm
+      - create
+      - "{{ vmid }}"
+      - --name
+      - "{{ template_name }}"
+      # - --node
+      # - "{{ proxmox_node }}"
+      - --cores
+      - "{{ cores }}"
+      - --memory
+      - "{{ memory }}"
+      - --net0
+      - "virtio,bridge={{ bridge }}"
+      - --scsihw
+      - virtio-scsi-pci
+      - --agent
+      - enabled=1
+      - --serial0
+      - socket
+      - --vga
+      - serial0
+      - --ostype
+      - l26
+
+- name: Import the customized disk
+  ansible.builtin.command:
+    argv:
+      - qm
+      - importdisk
+      - "{{ vmid }}"
+      - "{{ workdir }}/{{ customized_image_name }}"
+      - "{{ import_storage }}"
+
+- name: Read VM config to find imported disk
+  ansible.builtin.command:
+    argv: [qm, config, "{{ vmid }}"]
+  register: vm_config
+  changed_when: false
+
+- name: Extract imported disk volume ID
+  ansible.builtin.set_fact:
+    imported_disk: "{{ vm_config.stdout_lines | select('match', '^unused[0-9]+:') | list | first | regex_replace('^unused[0-9]+:\\s*', '') }}"
+
+- name: Attach imported disk as scsi0
+  ansible.builtin.command:
+    argv: [qm, set, "{{ vmid }}", --scsi0, "{{ imported_disk }}"]
+
+- name: Resize disk to target size
+  ansible.builtin.command:
+    argv: [qm, resize, "{{ vmid }}", scsi0, "{{ disk_size }}"]
+  failed_when: false
+
+- name: Attach cloud-init drive
+  ansible.builtin.command:
+    argv: [qm, set, "{{ vmid }}", --ide2, "{{ storage_pool }}:cloudinit"]
+
+- name: Set boot order
+  ansible.builtin.command:
+    argv: [qm, set, "{{ vmid }}", --boot, order=scsi0]
+
+- name: Convert VM to template
+  ansible.builtin.command:
+    argv: [qm, template, "{{ vmid }}"]
