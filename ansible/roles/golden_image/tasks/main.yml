@@ -29,16 +29,6 @@
     state: directory
     mode: "0755"
 
-# - name: Confirm SSH public key exists
-#   ansible.builtin.stat:
-#     path: "{{ ssh_pubkey_path }}"
-#   register: ssh_pubkey_stat
-
-# - name: Fail if SSH public key is missing
-#   ansible.builtin.assert:
-#     that: ssh_pubkey_stat.stat.exists
-#     fail_msg: "SSH public key not found at {{ ssh_pubkey_path }}"
-
 - name: Download base cloud image
   ansible.builtin.get_url:
     url: "{{ image_url }}"
