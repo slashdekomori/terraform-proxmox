@@ -52,12 +52,6 @@
       - rm -f /etc/ssh/ssh_host_*
       - --run-command
       - cloud-init clean --logs
-      # - --ssh-inject
-      # - "{{ ssh_user }}:file:{{ ssh_pubkey_path }}"
-  # virt-customize's own run-commands are idempotent (enable/truncate/rm -f),
-  # so re-running this on an already-customized image is harmless. It's only
-  # marked "changed" when a fresh image was just downloaded, to avoid
-  # reporting a no-op change on repeat playbook runs against a cached image.
   changed_when: image_download.changed
   become: true
 
