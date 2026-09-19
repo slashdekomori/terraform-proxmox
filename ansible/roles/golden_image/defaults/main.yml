@@ -1,5 +1,4 @@
 ---
-proxmox_node: psyche
 storage_pool: slow
 import_storage: slow
 bridge: vmbr0

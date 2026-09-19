@@ -81,8 +81,6 @@
       - "{{ vmid }}"
       - --name
       - "{{ template_name }}"
-      # - --node
-      # - "{{ proxmox_node }}"
       - --cores
       - "{{ cores }}"
       - --memory
