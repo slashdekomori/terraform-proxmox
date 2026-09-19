@@ -32,16 +32,23 @@
 - name: Download base cloud image
   ansible.builtin.get_url:
     url: "{{ image_url }}"
-    dest: "{{ workdir }}/base.qcow2"
+    dest: "{{ workdir }}/{{ image_name }}"
     mode: "0644"
   register: image_download
+
+- name: Copy base image for customization
+  ansible.builtin.copy:
+    src: "{{ workdir }}/{{ image_name }}"
+    dest: "{{ workdir }}/{{ customized_image_name }}"
+    remote_src: true
+    mode: "0644"
 
 - name: Customize image offline with virt-customize
   ansible.builtin.command:
     argv:
       - virt-customize
       - -a
-      - "{{ workdir }}/base.qcow2"
+      - "{{ workdir }}/{{ customized_image_name }}"
       - --install
       - qemu-guest-agent
       - --run-command
@@ -53,7 +60,6 @@
       - --run-command
       - cloud-init clean --logs
   changed_when: image_download.changed
-  become: true
 
 - name: Check for an existing VM/template with this ID
   ansible.builtin.command:
@@ -61,13 +67,11 @@
   register: existing_vm
   failed_when: false
   changed_when: false
-  become: true
 
 - name: Destroy existing VM/template with this ID, if present
   ansible.builtin.command:
     argv: [qm, destroy, "{{ vmid }}", --purge]
   when: existing_vm.rc == 0
-  become: true
 
 - name: Create the VM shell
   ansible.builtin.command:
@@ -95,18 +99,20 @@
       - serial0
       - --ostype
       - l26
-  become: true
 
 - name: Import the customized disk
   ansible.builtin.command:
-    argv: [qm, importdisk, "{{ vmid }}", "{{ workdir }}/base.qcow2", "{{ import_storage }}"]
-  become: true
+    argv:
+      - qm
+      - importdisk
+      - "{{ vmid }}"
+      - "{{ workdir }}/{{ customized_image_name }}"
+      - "{{ import_storage }}"
 
 - name: Read VM config to find imported disk
   ansible.builtin.command:
     argv: [qm, config, "{{ vmid }}"]
   register: vm_config
-  become: true
   changed_when: false
 
 - name: Extract imported disk volume ID
@@ -116,30 +122,20 @@
 - name: Attach imported disk as scsi0
   ansible.builtin.command:
     argv: [qm, set, "{{ vmid }}", --scsi0, "{{ imported_disk }}"]
-  become: true
-
-- name: Attach imported disk as scsi0
-  ansible.builtin.command:
-    argv: [qm, set, "{{ vmid }}", --scsi0, "{{ imported_disk }}"]
-  become: true
 
 - name: Resize disk to target size
   ansible.builtin.command:
     argv: [qm, resize, "{{ vmid }}", scsi0, "{{ disk_size }}"]
-  become: true
   failed_when: false
 
 - name: Attach cloud-init drive
   ansible.builtin.command:
     argv: [qm, set, "{{ vmid }}", --ide2, "{{ storage_pool }}:cloudinit"]
-  become: true
 
 - name: Set boot order
   ansible.builtin.command:
     argv: [qm, set, "{{ vmid }}", --boot, order=scsi0]
-  become: true
 
 - name: Convert VM to template
   ansible.builtin.command:
     argv: [qm, template, "{{ vmid }}"]
-  become: true
