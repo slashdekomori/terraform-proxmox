@@ -26,10 +26,6 @@ variable "default_datastore_id" {
   type    = string
   default = "slow"
 }
-variable "default_image_datastore_id" {
-  type    = string
-  default = "slow-files"
-}
 
 variable "default_user_name" {
   type    = string
