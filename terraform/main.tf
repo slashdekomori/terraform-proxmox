@@ -21,7 +21,7 @@ resource "proxmox_download_file" "debian-13-genericcloud-amd64" {
 }
 
 module "vm_template" {
-  source   = "../modules/vm_template"
+  source   = "./modules/vm_template"
   for_each = local.vm_templates
 
   node_name    = try(each.value.node_name, var.default_node_name)
@@ -36,7 +36,7 @@ module "vm_template" {
 }
 
 module "vm" {
-  source   = "../modules/vm"
+  source   = "./modules/vm"
   for_each = local.vms
 
   node_name     = try(each.value.node_name, var.default_node_name)
