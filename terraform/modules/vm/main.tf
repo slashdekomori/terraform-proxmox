@@ -28,6 +28,20 @@ resource "proxmox_virtual_environment_vm" "vm" {
     }
   }
 
+  dynamic "disk" {
+    for_each = var.template_id == null ? [1] : []
+
+    content {
+      datastore_id = var.datastore_id
+      import_from  = var.image_file_id
+      interface    = "virtio0"
+      iothread     = true
+      backup       = true
+      discard      = "on"
+      size         = var.disk_size
+    }
+  }
+
   cpu {
     cores   = var.cores
     sockets = var.socket
@@ -49,31 +63,6 @@ resource "proxmox_virtual_environment_vm" "vm" {
     datastore_id      = var.datastore_id
     user_data_file_id = proxmox_virtual_environment_file.user_data.id
   }
-
-
-  dynamic "disk" {
-    for_each = var.template_id == null ? [1] : []
-
-    content {
-      datastore_id = var.datastore_id
-      import_from  = var.image_file_id
-      interface    = "virtio0"
-      iothread     = true
-      backup       = true
-      discard      = "on"
-      size         = var.disk_size
-    }
-  }
-
-  # disk {
-  #   datastore_id = var.datastore_id
-  #   import_from  = var.image_file_id
-  #   interface    = "virtio0"
-  #   iothread     = true
-  #   backup       = false
-  #   discard      = "on"
-  #   size         = var.disk_size
-  # }
 
   network_device {
     bridge = "vmbr0"
