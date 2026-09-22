@@ -1,3 +1,4 @@
 {
-  "debian13_template_id": 9000
+  "debian13_template_id": 9000,
+  "debian13_golden_template_id": 9100
 }
