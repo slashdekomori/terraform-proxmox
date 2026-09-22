@@ -1,9 +1,12 @@
-# Terraform state
+# Terraform
 terraform.tfstate*
 .terraform
 .terraform.lock*
 *.tfvars
 !terraform.tfvars.example
+
+# Packer
+packer.auto.pkrvars.hcl
 
 # VM images
 *.qcow2
