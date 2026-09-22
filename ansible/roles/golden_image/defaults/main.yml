@@ -7,6 +7,9 @@ memory: 2048
 disk_size: 20G
 
 workdir: "/slow/files/ias/build/{{ distro }}"
+ci_user: init
+ci_password: "20080212"
+cloud_init_ipconfig: "ip=dhcp"
 shared_vars_file: "{{ playbook_dir }}/../../shared/templates.json"
 image_name: "{{ image_url | basename }}"
 customized_image_name: "{{ image_name | regex_replace('\\.qcow2$', '-customized.qcow2') }}"

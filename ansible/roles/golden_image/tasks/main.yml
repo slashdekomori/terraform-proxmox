@@ -130,6 +130,26 @@
   ansible.builtin.command:
     argv: [qm, set, "{{ vmid }}", --ide2, "{{ storage_pool }}:cloudinit"]
 
+- name: Set cloud-init user credentials
+  ansible.builtin.command:
+    argv:
+      - qm
+      - set
+      - "{{ vmid }}"
+      - --ciuser
+      - "{{ ci_user }}"
+      - --cipassword
+      - "{{ ci_password }}"
+
+- name: Set cloud-init network config
+  ansible.builtin.command:
+    argv:
+      - qm
+      - set
+      - "{{ vmid }}"
+      - --ipconfig0
+      - "{{ cloud_init_ipconfig }}"
+
 - name: Set boot order
   ansible.builtin.command:
     argv: [qm, set, "{{ vmid }}", --boot, order=scsi0]
