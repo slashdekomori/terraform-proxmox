@@ -47,7 +47,7 @@ build {
     inline = [
       "sudo cloud-init status --wait || true",
       "for i in 1 2 3; do sudo apt-get update && break; sleep 5; done",
-      "sudo apt-get install fastfetch -y"
+      "sudo apt-get install fastfetch -y",
       "sudo cloud-init clean",
       "sudo rm -f /etc/ssh/ssh_host_*",
       "sudo truncate -s 0 /etc/machine-id"
