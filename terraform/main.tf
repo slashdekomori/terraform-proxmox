@@ -22,9 +22,9 @@ module "vm" {
   image_file_id = try(each.value.image_file_id, null)
   template_id   = try(each.value.image_file_id, local.default_template_id, null)
 
-  #TODO: disk_size = lasjdalsdh
-  memory = try(each.value.memory, null)
-  cores  = try(each.value.cores, null)
+  memory    = try(each.value.memory, null)
+  cores     = try(each.value.cores, null)
+  disk_size = try(each.value.cores, null)
 
   user_name       = try(each.value.user_name, var.default_user_name)
   user_password   = try(each.value.user_password, var.default_user_password)
