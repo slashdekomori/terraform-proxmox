@@ -42,16 +42,3 @@ variable "default_timezone" {
   type    = string
   default = "Europe/Moscow"
 }
-
-variable "init_user_name" {
-  type    = string
-  default = "init"
-}
-variable "init_user_password" {
-  type      = string
-  sensitive = true
-}
-variable "init_ssh_public_keys" {
-  type      = list(string)
-  sensitive = true
-}
