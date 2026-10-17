@@ -4,10 +4,11 @@ locals {
   default_template_id = local.templates.debian13_template_id
 
   vms = {
-    k3s-master   = { cores = 2, memory = 2048 },
-    k3s-worker1  = { cores = 2, memory = 2048 },
-    k3s-worker2  = { cores = 2, memory = 2048 },
-    test-monitor = { cores = 2, memory = 2048 }
+    k3s-master     = { cores = 2, memory = 2048 },
+    k3s-worker1    = { cores = 2, memory = 2048 },
+    k3s-worker2    = { cores = 2, memory = 2048 },
+    test-ipv4      = { ipv4_address = "10.0.2.2/24", ipv4_gateway = "10.0.2.1", vlan_id = 3 },
+    test-ipv4-nogw = { ipv4_address = "10.0.2.3/24", vlan_id = 3 }
   }
 }
 
@@ -25,6 +26,10 @@ module "vm" {
   memory    = try(each.value.memory, null)
   cores     = try(each.value.cores, null)
   disk_size = try(each.value.disk_size, null)
+
+  ipv4_address = try(each.value.ipv4_address, null)
+  ipv4_gateway = try(each.value.ipv4_gateway, null)
+  vlan_id      = try(each.value.vlan_id, null)
 
   user_name       = try(each.value.user_name, var.default_user_name)
   user_password   = try(each.value.user_password, var.default_user_password)
