@@ -1,6 +1,5 @@
 variable "image_file_id" { type = string }
 variable "node_name" { type = string }
-variable "datastore_id" { type = string }
 variable "vm_name" { type = string }
 variable "vm_id" {
   type    = number
@@ -26,6 +25,10 @@ variable "template_id" {
   type    = number
   default = null
 }
+
+variable "disk_datastore_id" { type = string }
+variable "snippet_datastore_id" { type = string }
+
 
 variable "ipv4_address" {
   type    = string

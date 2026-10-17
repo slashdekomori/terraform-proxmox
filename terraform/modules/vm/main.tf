@@ -1,6 +1,6 @@
 resource "proxmox_virtual_environment_file" "user_data" {
   content_type = "snippets"
-  datastore_id = "local"
+  datastore_id = var.snippet_datastore_id
   node_name    = var.node_name
 
   source_raw {
@@ -32,7 +32,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
     for_each = var.template_id == null ? [1] : []
 
     content {
-      datastore_id = var.datastore_id
+      datastore_id = var.disk_datastore_id
       import_from  = var.image_file_id
       interface    = "virtio0"
       iothread     = true
@@ -60,7 +60,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
         gateway = var.ipv4_address == "dhcp" ? null : var.ipv4_gateway
       }
     }
-    datastore_id      = var.datastore_id
+    datastore_id      = var.snippet_datastore_id
     user_data_file_id = proxmox_virtual_environment_file.user_data.id
   }
 
@@ -79,7 +79,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   efi_disk {
-    datastore_id = var.datastore_id
+    datastore_id = var.disk_datastore_id
     type         = "4m"
   }
 
