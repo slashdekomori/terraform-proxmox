@@ -24,7 +24,7 @@ module "vm" {
 
   memory    = try(each.value.memory, null)
   cores     = try(each.value.cores, null)
-  disk_size = try(each.value.cores, null)
+  disk_size = try(each.value.disk_size, null)
 
   user_name       = try(each.value.user_name, var.default_user_name)
   user_password   = try(each.value.user_password, var.default_user_password)
