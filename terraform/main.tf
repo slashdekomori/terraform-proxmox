@@ -1,53 +1,33 @@
 locals {
-  templates = jsondecode(file("${path.root}/../shared/templates.json"))
-  # debian13_template_id = local.templates.debian13_template_id
+  templates           = jsondecode(file("${path.root}/../shared/templates.json"))
   default_template_id = local.templates.debian13_template_id
-
-  vms = {
-    k3s-master     = { cores = 2, memory = 2048 },
-    k3s-worker1    = { cores = 2, memory = 2048 },
-    k3s-worker2    = { cores = 2, memory = 2048 },
-    test-ipv4      = { ipv4_address = "10.0.2.2/24", ipv4_gateway = "10.0.2.1", vlan_id = 3 },
-    test-ipv4-nogw = { ipv4_address = "10.0.2.3/24", vlan_id = 3 }
-  }
 }
 
 module "vm" {
   source   = "./modules/vm"
-  for_each = local.vms
+  for_each = var.vms
 
-  node_name     = try(each.value.node_name, var.default_node_name)
-  vm_id         = try(each.value.vm_id, null)
-  datastore_id  = try(each.value.datastore_id, var.default_datastore_id)
-  vm_name       = try(each.value.vm_name, each.key)
-  image_file_id = try(each.value.image_file_id, null)
-  template_id   = try(each.value.image_file_id, local.default_template_id, null)
+  vm_name = each.key
+  vm_id   = each.value.vm_id
 
-  memory    = try(each.value.memory, null)
-  cores     = try(each.value.cores, null)
-  disk_size = try(each.value.disk_size, null)
+  node_name            = coalesce(each.value.node_name, var.defaults.node_name)
+  disk_datastore_id    = coalesce(each.value.disk_datastore_id, var.defaults.disk_datastore_id)
+  snippet_datastore_id = coalesce(each.value.snippet_datastore_id, var.defaults.snippet_datastore_id)
 
-  ipv4_address = try(each.value.ipv4_address, null)
-  ipv4_gateway = try(each.value.ipv4_gateway, null)
-  vlan_id      = try(each.value.vlan_id, null)
+  image_file_id = each.value.image_file_id
+  template_id   = each.value.image_file_id != null ? null : coalesce(each.value.template_id, local.default_template_id)
 
-  user_name       = try(each.value.user_name, var.default_user_name)
-  user_password   = try(each.value.user_password, var.default_user_password)
-  ssh_public_keys = var.ssh_public_keys
-  timezone        = try(each.value.timezone, var.default_timezone)
+  cores     = each.value.cores
+  socket    = each.value.socket
+  memory    = each.value.memory
+  disk_size = each.value.disk_size
+
+  ipv4_address = each.value.ipv4_address
+  ipv4_gateway = each.value.ipv4_gateway
+  vlan_id      = each.value.vlan_id
+
+  user_name       = coalesce(each.value.user_name, var.defaults.user_name)
+  user_password   = coalesce(each.value.user_password, var.defaults.user_password)
+  ssh_public_keys = coalesce(each.value.ssh_public_keys, var.defaults.ssh_public_keys)
+  timezone        = coalesce(each.value.timezone, var.defaults.timezone)
 }
-
-# module "vm_template" {
-#   source   = "./modules/vm_template"
-#   for_each = local.vm_templates
-#
-#   node_name    = try(each.value.node_name, var.default_node_name)
-#   vm_id        = try(each.value.vm_id, null)
-#   datastore_id = try(each.value.datastore_id, var.default_datastore_id)
-#   vm_name      = try(each.value.vm_name, each.key)
-#   image_file_id   = try(each.value.image_file_id, null)
-#   template_id     = try(each.value.image_file_id, local.default_template_id, null)
-#   user_name       = try(each.value.user_name, var.init_user_name)
-#   user_password   = try(each.value.user_password, var.init_user_password)
-#   ssh_public_keys = var.init_ssh_public_keys
-# }

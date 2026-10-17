@@ -1,0 +1,26 @@
+defaults = {
+  node_name            = "pve1"
+  disk_datastore_id    = "hdd1"
+  snippet_datastore_id = "local"
+  user_name            = "username"
+  user_password        = "password"
+  ssh_public_keys      = ["ssh-ed25519 ...", "ssh-ed25519 ..."]
+  timezone             = "UTC"
+
+  cores     = 2
+  socket    = 1
+  memory    = 2048
+  disk_size = 20
+}
+
+vms = {
+  k3s-master = { cores = 2, memory = 2048 }
+}
+
+# Proxmox
+proxmox_endpoint  = "https://10.0.0.100:8006"
+proxmox_api_token = "root@pam!terraform=token"
+proxmox_insecure  = true
+proxmox_password  = "password"
+
+
