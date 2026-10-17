@@ -54,10 +54,10 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   initialization {
-    # TODO: convert to var
     ip_config {
       ipv4 {
-        address = "dhcp"
+        address = var.ipv4_address
+        gateway = var.ipv4_address == "dhcp" ? null : var.ipv4_gateway
       }
     }
     datastore_id      = var.datastore_id
@@ -65,8 +65,9 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   network_device {
-    bridge = "vmbr0"
-    model  = "virtio"
+    bridge  = "vmbr0"
+    model   = "virtio"
+    vlan_id = var.vlan_id
   }
 
   operating_system { type = "l26" }

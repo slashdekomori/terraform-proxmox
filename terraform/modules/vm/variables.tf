@@ -27,6 +27,19 @@ variable "template_id" {
   default = null
 }
 
+variable "ipv4_address" {
+  type    = string
+  default = null
+}
+variable "ipv4_gateway" {
+  type    = string
+  default = null
+}
+variable "vlan_id" {
+  type    = string
+  default = null
+}
+
 variable "user_name" { type = string }
 variable "user_password" { type = string }
 variable "ssh_public_keys" { type = list(string) }
