@@ -64,6 +64,21 @@ variable "vlan_id" {
   type    = number
   default = null
 }
+variable "mac_address" {
+  type        = string
+  description = "MAC address for the VM network interface"
+  default     = null
+  nullable    = true
+
+  validation {
+    condition = var.mac_address == null || can(regex(
+      "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$",
+      var.mac_address
+    ))
+
+    error_message = "MAC address must be in the format XX:XX:XX:XX:XX:XX."
+  }
+}
 
 variable "user_name" { type = string }
 variable "user_password" {

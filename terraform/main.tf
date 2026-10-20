@@ -25,6 +25,7 @@ module "vm" {
   ipv4_address = each.value.ipv4_address
   ipv4_gateway = each.value.ipv4_gateway
   vlan_id      = each.value.vlan_id
+  mac_address  = each.value.mac_address
 
   user_name       = coalesce(each.value.user_name, var.defaults.user_name)
   user_password   = coalesce(each.value.user_password, var.defaults.user_password)

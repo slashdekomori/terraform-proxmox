@@ -41,6 +41,7 @@ variable "vms" {
     ipv4_address = optional(string)
     ipv4_gateway = optional(string)
     vlan_id      = optional(number)
+    mac_address  = optional(string)
 
     user_name       = optional(string)
     user_password   = optional(string)
@@ -83,5 +84,3 @@ variable "proxmox_insecure" {
   type        = bool
   default     = true
 }
-
-
